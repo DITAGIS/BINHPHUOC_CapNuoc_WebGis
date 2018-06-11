@@ -31,7 +31,7 @@ class Header extends React.Component<Props, States> {
               showMenuIconButton={false}
               iconElementRight={
                 <Link to="/logout">
-                  <FlatButton label="Đăng xuất" secondary={true} />
+                  <FlatButton label="Đăng xuất" style={{ color: '#fff' }} />
                 </Link>
               }
             /> :
