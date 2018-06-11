@@ -1,0 +1,26 @@
+.mapDiv{
+  width: 100%;
+  height: 100vh
+}
+.esri-view-root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Fix for some calcite styles */
+
+.esri-widget {
+  h3 {
+    font-size: 1rem;
+  }
+  li {
+    margin: 0;
+  }
+  font-family: Roboto,
+  sans-serif;
+}
+
+.esri-widget-button {
+  background: rgb(0, 188, 212);
+  color: white;
+}
