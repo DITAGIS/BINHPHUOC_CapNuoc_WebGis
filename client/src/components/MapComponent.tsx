@@ -52,7 +52,7 @@ class LoginComponent extends React.Component<Props, States> {
       });
 
     this.view.ui.add(expand, 'top-left');
-    //không có dòng này thì layerlist không load được legend
+    // không có dòng này thì layerlist không load được legend
     var legend = new Legend({ view: this.view });
   }
 

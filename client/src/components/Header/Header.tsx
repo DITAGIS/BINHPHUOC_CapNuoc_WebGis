@@ -1,7 +1,9 @@
 import * as React from 'react';
 import {
-  AppBar, Drawer, MenuItem, Card, CardHeader, CardText, Divider
+  AppBar, Drawer, MenuItem, Card, CardHeader, CardText, Divider, FlatButton
 } from 'material-ui';
+import Auth from '../../modules/Auth';
+import { Link } from 'react-router-dom';
 type Props = {
 
 };
@@ -20,12 +22,27 @@ class Header extends React.Component<Props, States> {
   render() {
     return (
       <div>
-        <AppBar
-          title="Cấp nước Bình Phước"
-          // onLeftIconButtonClick={e => this.setState({ isOpenDrawer: true })}
-          // iconElementRight={<FlatButton label="Chọn thời gian" onClick={this.chonThoiGian.bind(this)} />}
-          showMenuIconButton={false}
-        />
+        {
+          Auth.isUserAuthenticated() ?
+            <AppBar
+              title="Cấp nước Bình Phước"
+              // onLeftIconButtonClick={e => this.setState({ isOpenDrawer: true })}
+              // iconElementRight={<FlatButton label="Chọn thời gian" onClick={this.chonThoiGian.bind(this)} />}
+              showMenuIconButton={false}
+              iconElementRight={
+                <Link to="/logout">
+                  <FlatButton label="Đăng xuất" secondary={true} />
+                </Link>
+              }
+            /> :
+            <AppBar
+              title="Cấp nước Bình Phước"
+              // onLeftIconButtonClick={e => this.setState({ isOpenDrawer: true })}
+              // iconElementRight={<FlatButton label="Chọn thời gian" onClick={this.chonThoiGian.bind(this)} />}
+              showMenuIconButton={false}
+            />
+        }
+
         <Drawer
           open={this.state.isOpenDrawer}
           docked={false}
@@ -33,7 +50,7 @@ class Header extends React.Component<Props, States> {
         >
           <Card>
             <CardHeader
-              avatar="./images/icon/android-icon-72x72.png"
+              avatar="./static/images/icons/icon-72x72.png"
               title="DITAGIS"
               subtitle={new Date().toLocaleTimeString()}
             />

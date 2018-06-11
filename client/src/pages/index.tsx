@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import LoginPage from './LoginPage';
 import MapPage from './MapPage';
 import Header from '../components/Header/Header';
+import LogoutFunction from './LogoutFunction';
 import Auth from '../modules/Auth';
 import {
   BrowserRouter,
@@ -73,6 +74,7 @@ class Index extends React.Component<Props, State> {
                   )
               )}
             />
+            <Route path="/logout" component={LogoutFunction} />
           </div>
         </BrowserRouter>
       </div>
