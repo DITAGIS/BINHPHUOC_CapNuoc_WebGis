@@ -7,6 +7,8 @@ import LayerList = require('esri/widgets/LayerList');
 import Expand = require('esri/widgets/Expand');
 import Legend = require('esri/widgets/Legend');
 import * as Popup from '../map-lib/widgets/Popup';
+import SearchWidget = require('esri/widgets/Search');
+import Locator = require('esri/tasks/Locator');
 type Props = {
 };
 type States = {
@@ -62,10 +64,59 @@ class LoginComponent extends React.Component<Props, States> {
           return {
             layer: m,
             showDeleteButton: true,
+            showAttachments: true,
             isEditable: true
           } as Popup.LayerInfo;
         }).toArray()
     });
+
+    // tìm kiếm
+    var search = new SearchWidget({
+      view: this.view,
+      searchAllEnabled: false,
+      sources: [
+        {
+          locator: new Locator({ url: '//geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer' }),
+          singleLineFieldName: 'SingleLine',
+          outFields: ['Addr_type'],
+          countryCode: 'VNM',
+          localSearchOptions: {
+            minScale: 300000,
+            distance: 50000
+          },
+          popupEnabled: false,
+          placeholder: 'Tìm địa chỉ',
+          name: 'Tìm địa chỉ',
+        } as __esri.LocatorSource,
+        {
+          featureLayer: this.map.findLayerById('DHKH'),
+          displayField: 'DBDONGHONUOC',
+          searchFields: ['DBDONGHONUOC', 'SODIENTHOAI', 'SOHOKHAU',
+            'NGUOICAPNHAT', 'LOAIDONGHO', 'HIEUDONGHO', 'SOCHUNGMINH'],
+          placeholder: 'Tìm đồng hồ khách hàng'
+        } as __esri.FeatureLayerSource,
+        {
+          featureLayer: this.map.findLayerById('TruHong'),
+          displayField: 'MATRU',
+          searchFields: ['MATRU', 'TEN', 'NGUOICAPNHAT'],
+          placeholder: 'Tìm trụ họng'
+        } as __esri.FeatureLayerSource,
+        {
+          featureLayer: this.map.findLayerById('Van'),
+          displayField: 'MA_VAN',
+          searchFields: ['MA_VAN', 'TEN', 'VI_TRI_LAP', 'DON_VI_LAP', 'NGUOICAPNHAT'],
+          placeholder: 'Tìm van'
+        } as __esri.FeatureLayerSource,
+        {
+          featureLayer: this.map.findLayerById('DuongOng'),
+          displayField: 'MADUONGONG',
+          searchFields: ['MADUONGONG', 'TEN', 'NGUOICAPNHAT'],
+          placeholder: 'Tìm đường ống'
+        } as __esri.FeatureLayerSource,
+      ]
+    });
+
+    this.view.ui.add(search, 'top-right');
   }
 
   private initFL() {
@@ -98,7 +149,7 @@ class LoginComponent extends React.Component<Props, States> {
       url: 'https://bpwis.vbgis.vn:6443/arcgis/rest/services/CapNuocBinhPhuoc/ChuyenDe/FeatureServer/3',
       title: 'Đường ống',
       outFields: ['*'],
-      id: 'DuongOngLayer'
+      id: 'DuongOng'
     });
 
     this.map.addMany([basemap, dhkhLayer, truHongLayer, vanLayer, duongOngLayer]);

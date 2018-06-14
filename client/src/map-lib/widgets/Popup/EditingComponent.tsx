@@ -89,7 +89,7 @@ class EditingComponent extends React.Component<Props, States> {
       <MuiThemeProvider>
         <div>
           {
-            layerFieldsInfos.map(layerField => {
+            layerFieldsInfos.filter(f => f.isEditable).map(layerField => {
               return (
                 <Item
                   key={layer.id + '_' + layerField.name}

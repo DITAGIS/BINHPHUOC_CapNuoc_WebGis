@@ -15,7 +15,7 @@ export interface LayerFieldInfo {
   alias?: string;
   domain?: __esri.Domain;
   type?: 'small-integer' | 'integer' | 'single'
-  | 'double' | 'long' | 'string' | 'date' | 'oid' | 'geometry' | 'blob' | 'raster' | 'guid' | 'global-id' | 'xml'
+  | 'double' | 'long' | 'string' | 'date' | 'oid' | 'geometry' | 'blob' | 'raster' | 'guid' | 'global-id' | 'xml';
 }
 
 export interface LayerInfo {
@@ -58,6 +58,7 @@ class Popup {
     layerInfo.showObjectID = layerInfo.showObjectID || false;
     layerInfo.showGlobalID = layerInfo.showGlobalID || false;
     layerInfo.showAttachments = layerInfo.showAttachments || false;
+    layerInfo.isEditable = layerInfo.isEditable || false;
     const { layer, isEditable, showDeleteButton, showAttachments, showGlobalID, showObjectID } = layerInfo;
     layer.when((layerView: __esri.LayerView) => {
 
@@ -97,7 +98,7 @@ class Popup {
         layerFields = layer.fields.map(m => {
           return {
             name: m.name,
-            isEditable: false, // mặc định không cho chỉnh sửa,
+            isEditable: isEditable, // mặc định không cho chỉnh sửa,
             domain: m.domain,
             alias: m.alias,
             type: m.type
@@ -157,6 +158,11 @@ class Popup {
     // đăng ký sự kiện khi click vào action
     this.view.popup.on('trigger-action', this.triggerActionHandler.bind(this));
 
+    this.view.popup.watch('visible', (newValue: boolean) => {
+      if (!newValue) {
+        this.highlight.clear();
+      }
+    });
     this.view.popup.watch('selectedFeature', (newValue: __esri.Graphic, oldValue: __esri.Graphic) => {
       this.highlight.clear();
       if (newValue && newValue !== oldValue) {

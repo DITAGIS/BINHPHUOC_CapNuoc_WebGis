@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import reducers from './reducers/reducers'
+import reducers from './reducers/reducers';
 import { MuiThemeProvider, getMuiTheme } from 'material-ui/styles';
 import './css/main.scss';
 let store = createStore(reducers

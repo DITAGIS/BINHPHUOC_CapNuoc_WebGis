@@ -1,7 +1,8 @@
-.mapDiv{
+.mapDiv {
   width: 100%;
   height: 100vh
 }
+
 .esri-view-root {
   width: 100%;
   height: 100%;
@@ -18,9 +19,25 @@
   }
   font-family: Roboto,
   sans-serif;
+  .esri-menu {
+    background-color: #00bce5;
+  }
+  .esri-menu li:hover,
+  .esri-menu li:focus {
+    background-color: #00bcd4;
+  }
 }
 
+.esri-popup__header,
 .esri-widget-button {
-  background: rgb(0, 188, 212);
+  background-color: #00bcd4;
   color: white;
+}
+
+.esri-popup__button {
+  color: #fffcfc;
+}
+
+.esri-popup__feature-buttons {
+  background-color: #00bcd4;
 }
