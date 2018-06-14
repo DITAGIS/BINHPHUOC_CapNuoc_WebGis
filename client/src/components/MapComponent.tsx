@@ -60,7 +60,9 @@ class LoginComponent extends React.Component<Props, States> {
       layerInfos: this.map.allLayers.filter(f => f.type === 'feature')
         .map(m => {
           return {
-            layer: m
+            layer: m,
+            showDeleteButton: true,
+            isEditable: true
           } as Popup.LayerInfo;
         }).toArray()
     });
