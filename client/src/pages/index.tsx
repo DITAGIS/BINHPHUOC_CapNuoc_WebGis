@@ -3,6 +3,7 @@ import HomePage from './HomePage';
 import { connect } from 'react-redux';
 import LoginPage from './LoginPage';
 import MapPage from './MapPage';
+import TKDHKHPage from './ThongKeDongHoKhachHangPage';
 import Header from '../components/Header/Header';
 import LogoutFunction from './LogoutFunction';
 import Auth from '../modules/Auth';
@@ -49,6 +50,17 @@ class Index extends React.Component<Props, State> {
             <Route path="/map" render={props => (
               Auth.isUserAuthenticated() ? (
                 <MapPage />
+              ) : (
+                  <Redirect to={{
+                    pathname: '/',
+                    state: { from: props.location }
+                  }} />
+                )
+            )}
+            />
+            <Route path="/thong-ke-dhkh" render={props => (
+              Auth.isUserAuthenticated() ? (
+                <TKDHKHPage />
               ) : (
                   <Redirect to={{
                     pathname: '/',

@@ -26,9 +26,8 @@ class Header extends React.Component<Props, States> {
           Auth.isUserAuthenticated() ?
             <AppBar
               title="Cấp nước Bình Phước"
-              // onLeftIconButtonClick={e => this.setState({ isOpenDrawer: true })}
+              onLeftIconButtonClick={e => this.setState({ isOpenDrawer: true })}
               // iconElementRight={<FlatButton label="Chọn thời gian" onClick={this.chonThoiGian.bind(this)} />}
-              showMenuIconButton={false}
               iconElementRight={
                 <Link to="/logout">
                   <FlatButton label="Đăng xuất" style={{ color: '#fff' }} />
@@ -50,12 +49,12 @@ class Header extends React.Component<Props, States> {
         >
           <Card>
             <CardHeader
-              avatar="./static/images/icons/icon-72x72.png"
               title="DITAGIS"
               subtitle={new Date().toLocaleTimeString()}
             />
           </Card>
           <MenuItem primaryText="Tên phần mềm" />
+          <Link to="/thong-ke-dhkh"><MenuItem primaryText="Thống kê đồng hồ khách hàng" /></Link>
           <Divider />
           <CardText>Giới thiệu phần mềm</CardText>
           <CardText>Phiên bản:</CardText>
