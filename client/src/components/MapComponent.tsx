@@ -6,7 +6,7 @@ import FeatureLayer = require('esri/layers/FeatureLayer');
 import LayerList = require('esri/widgets/LayerList');
 import Expand = require('esri/widgets/Expand');
 import Legend = require('esri/widgets/Legend');
-
+import * as Popup from '../map-lib/widgets/Popup';
 type Props = {
 };
 type States = {
@@ -54,6 +54,16 @@ class LoginComponent extends React.Component<Props, States> {
     this.view.ui.add(expand, 'top-left');
     // không có dòng này thì layerlist không load được legend
     var legend = new Legend({ view: this.view });
+
+    var popup = new Popup.default({
+      view: this.view,
+      layerInfos: this.map.allLayers.filter(f => f.type === 'feature')
+        .map(m => {
+          return {
+            layer: m
+          } as Popup.LayerInfo;
+        }).toArray()
+    });
   }
 
   private initFL() {
