@@ -1,10 +1,10 @@
 import PopupTemplate = require('esri/PopupTemplate');
 import Action = require('esri/support/Action');
 import PopupEditing from './Popup/Editing';
-import Collection = require('esri/core/Collection');
 import HighlightGraphic from '../support/HighlightGraphic';
+
 export enum PopupAction {
-  UPDATE,
+  EDIT,
   DELETE
 }
 
@@ -12,6 +12,10 @@ export interface LayerFieldInfo {
   name: string;
   format?: object;
   isEditable?: boolean;
+  alias?: string;
+  domain?: __esri.Domain;
+  type?: 'small-integer' | 'integer' | 'single'
+  | 'double' | 'long' | 'string' | 'date' | 'oid' | 'geometry' | 'blob' | 'raster' | 'guid' | 'global-id' | 'xml'
 }
 
 export interface LayerInfo {
@@ -51,18 +55,17 @@ class Popup {
    * @param layerInfo Định nghĩa những lớp hiển thị popup
    */
   private initPopup(layerInfo: LayerInfo) {
-    const { layer, isEditable, showDeleteButton } = layerInfo;
-    const showObjectID = layerInfo.showObjectID || false;
-    const showGlobalID = layerInfo.showGlobalID || false;
-
+    layerInfo.showObjectID = layerInfo.showObjectID || false;
+    layerInfo.showGlobalID = layerInfo.showGlobalID || false;
+    layerInfo.showAttachments = layerInfo.showAttachments || false;
+    const { layer, isEditable, showDeleteButton, showAttachments, showGlobalID, showObjectID } = layerInfo;
     layer.when((layerView: __esri.LayerView) => {
-      var popupTemplate = new PopupTemplate();
-      popupTemplate.title = layer.title;
-      let actions = new Collection<Action>();
+
+      let actions = [];
       // nếu được phép chỉnh sửa
       if (isEditable) {
         actions.push(new Action({
-          id: PopupAction.UPDATE + '',
+          id: PopupAction.EDIT + '',
           title: 'Cập nhật',
           className: 'esri-icon-edit',
         }));
@@ -77,16 +80,31 @@ class Popup {
       }
       let layerFields: LayerFieldInfo[];
       if (layerInfo.layerFields) {
-        layerFields = layerInfo.layerFields;
+        layerFields = layerInfo.layerFields.slice();
+        layerFields.forEach(layerField => {
+          let field = layer.fields.find(_field => _field.name === layerField.name);
+          if (field) {
+            if (!layerField.alias) {
+              layerField.alias = field.alias;
+            }
+            layerField.domain = field.domain;
+            layerField.type = field.type as any;
+          }
+        });
       } else {
         // nếu không có thì tự tạo
         // lấy tất cả field từ layer
         layerFields = layer.fields.map(m => {
           return {
             name: m.name,
-            isEditable: false// mặc định không cho chỉnh sửa
+            isEditable: false, // mặc định không cho chỉnh sửa,
+            domain: m.domain,
+            alias: m.alias,
+            type: m.type
           } as LayerFieldInfo;
         });
+
+        layerInfo.layerFields = layerFields;
       }
       // lấy fields để nhận name và alias
       let fields = layerFields
@@ -116,10 +134,18 @@ class Popup {
             label: m.alias,
           };
         })
+      }];
+
+      if (showAttachments) {
+        content.push({
+          type: 'attachments'
+        } as any);
       }
-      ];
-      popupTemplate.content = content;
-      popupTemplate.actions = actions;
+      var popupTemplate = new PopupTemplate({
+        title: layer.title,
+        content,
+        actions
+      });
       layer.popupTemplate = popupTemplate;
     });
   }
@@ -148,8 +174,12 @@ class Popup {
     switch (actionId) {
 
       // sự kiện cập nhật
-      case PopupAction.UPDATE.toString():
-
+      case PopupAction.EDIT.toString():
+        let layerInfos = this.layerInfos.find(f => f.layer.id === this.view.popup.selectedFeature.layer.id);
+        if (layerInfos) {
+          this.editing.render(layerInfos.layerFields);
+        }
+        break;
       // sự kiện xóa
       case PopupAction.DELETE.toString():
         this.editing.delete();
