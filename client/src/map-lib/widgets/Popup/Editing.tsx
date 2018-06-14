@@ -20,9 +20,47 @@ class PopupEditing {
         layer={layer as __esri.FeatureLayer}
         layerFieldsInfos={layerFields}
         attributes={attributes}
+        onSave={this.onSave.bind(this)}
       />,
       div);
     this.view.popup.content = div;
+  }
+
+  private async onSave(attributes: object) {
+    try {
+      const layer = this.view.popup.selectedFeature.layer as __esri.FeatureLayer;
+
+      var updateAttributes = {
+        objectId: this.view.popup.selectedFeature.attributes.OBJECTID,
+        ...attributes
+      };
+
+      let result = await layer.applyEdits({
+        updateFeatures: [
+          {
+            attributes: updateAttributes
+          } as __esri.Graphic
+        ]
+      });
+
+      let updateFeatureResults = result.updateFeatureResults as __esri.FeatureEditResult[];
+
+      if (updateFeatureResults[0].objectId) {
+        let query = layer.createQuery();
+        query.outFields = ['*'];
+        query.where = 'OBJECTID=' + updateAttributes.objectId;
+        layer.queryFeatures(query).then(res => {
+          this.view.popup.open({
+            features: res.features
+          });
+        });
+      }
+      return result.updateFeatureResults.length > 0 && !result.updateFeatureResults[0].error;
+
+    } catch (err) {
+      return false;
+    }
+
   }
 
   public async delete() {

@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { TextField, SelectField, MenuItem } from 'material-ui';
+import { TextField, SelectField, MenuItem, RaisedButton } from 'material-ui';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { LayerFieldInfo } from '../Popup';
 interface Props {
   layerFieldsInfos: LayerFieldInfo[];
   layer: __esri.FeatureLayer;
   attributes: object;
+  onSave: (attributes: object) => void;
 }
 
 interface States {
@@ -99,6 +100,9 @@ class EditingComponent extends React.Component<Props, States> {
               );
             })
           }
+          <RaisedButton label="Cập nhật" primary={true}
+            fullWidth={true}
+            onClick={(_: any) => { this.props.onSave(this.state.attributes || {}); }} />
         </div>
       </MuiThemeProvider>
 
