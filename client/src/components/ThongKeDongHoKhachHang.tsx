@@ -8,7 +8,12 @@ import * as Popup from '../map-lib/widgets/Popup';
 import SearchWidget = require('esri/widgets/Search');
 import watchUtils = require('esri/core/watchUtils');
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
-import { Card } from 'material-ui';
+import {
+  Card, Tab, Tabs, Table,
+  TableBody, TableRow, TableRowColumn, TableHeaderColumn, TableHeader, LinearProgress, Paper
+} from 'material-ui';
+import { thongKeTieuThuTheoTuyenDuong, thongKeTheoTuyenDuong } from '../apis/api';
+import SwipeableViews from 'react-swipeable-views';
 
 const COLORS = ['#1abc9c', '#2ecc71', '#3498db',
   '#9b59b6', '#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -22,12 +27,29 @@ interface ChartData {
 type Props = {
 };
 type States = {
-  chartDatas: ChartData[]
+  chartDatas: ChartData[],
+  slideIndex: number;
+  tuyenDuongDongHoState: {
+    datas?: ThongKeTheoTuyenDuong[];
+    isLoading: boolean,
+    error?: string,
+  }
+  tieuThuState: {
+    datas?: ThongKeTheoTuyenDuong[];
+    isLoading: boolean,
+    error?: string
+  }
 };
 
 const classes = {
   container: 'mapDiv'
 };
+
+enum TAB_ID {
+  TINH_TRANG,
+  TUYEN_DUONG,
+  TIEU_THU
+}
 
 class ThongKeDongHoKhachHang extends React.Component<Props, States> {
   private mapDiv: HTMLDivElement;
@@ -38,7 +60,15 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      chartDatas: []
+      chartDatas: [],
+      slideIndex: 0,
+
+      tuyenDuongDongHoState: {
+        isLoading: true
+      },
+      tieuThuState: {
+        isLoading: true
+      }
     };
   }
 
@@ -119,7 +149,7 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
         });
 
         let falseHandle = watchUtils.watch(layerView, 'updating', (val: boolean) => {
-          if (!val) {
+          if (!val && this.state.slideIndex === TAB_ID.TINH_TRANG) {
             this.layer.queryFeatureCount({
               where: '1=1'
             })
@@ -131,7 +161,9 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
               });
           }
           watchUtils.whenTrue(this.view, 'stationary', (value) => {
-            this.queryLayerViewStats(layerView);
+            if (this.state.slideIndex === TAB_ID.TINH_TRANG) {
+              this.queryLayerViewStats(layerView);
+            }
           });
         });
       });
@@ -153,6 +185,9 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
     return this.layer.queryFeatures(query)
       .then((data) => {
         let chartDatas = this.state.chartDatas.slice();
+        chartDatas.forEach(f => {
+          f.value = 0;
+        });
         data.features.forEach(feature => {
           const attributes = feature.attributes;
           const { TinhTrangKhaoSat, Value } = attributes;
@@ -172,7 +207,46 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
   //   value = value || 0;
   //   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   // }
+  private async  handleChange(value: number) {
+    this.setState({ slideIndex: value });
 
+    if (value === TAB_ID.TUYEN_DUONG) {
+      let states = {
+        ...this.state.tuyenDuongDongHoState
+      };
+      // nếu chưa tải dữ liệu thống kê tuyến đường
+      if (!states.datas) {
+        try {
+          let results = await thongKeTheoTuyenDuong() as ThongKeTheoTuyenDuong[];
+          states.datas = results;
+        } catch (error) {
+          states.error = 'Có lỗi xảy ra trong quá trình thực hiện';
+        }
+        finally {
+          states.isLoading = false;
+        }
+      }
+      this.setState({ tuyenDuongDongHoState: states });
+    } else if (value === TAB_ID.TIEU_THU) {
+      let states = {
+        ...this.state.tieuThuState
+      };
+      // nếu chưa tải dữ liệu thống kê tuyến đường
+      if (!states.datas) {
+        try {
+          let results = await thongKeTieuThuTheoTuyenDuong() as ThongKeTheoTuyenDuong[];
+          states.datas = results;
+        } catch (error) {
+          states.error = 'Có lỗi xảy ra trong quá trình thực hiện';
+        }
+        finally {
+          states.isLoading = false;
+        }
+      }
+      this.setState({ tieuThuState: states });
+    }
+
+  }
   render() {
     return (
       <div className={classes.container}>
@@ -182,52 +256,139 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
             (element: HTMLDivElement) => this.mapDiv = element
           }>
         </div>
-        <Card style={{ position: 'absolute', top: 80, right: 10, height: 550, width: 300 }}>
-          <h1 style={{ width: '100%', fontSize: 24, textAlign: 'center' }}>Biểu đồ tình trạng khảo sát</h1>
-          <h2 style={{ width: '100%', fontSize: 20, textAlign: 'center' }}>Đồng hồ khách hàng</h2>
-          {/* <CardHeader
-              style={{ padding: 0 }}
-              titleStyle={{ width: '100%', fontSize: 24, textAlign: 'center' }}
-              subtitleStyle={{ width: '100%', fontSize: 20, textAlign: 'center' }}
-              title=""
-              subtitle=""
-            /> */}
-          <p style={{ textAlign: 'center' }}>
-            Tổng đồng hồ:
+        <Paper style={{ position: 'absolute', top: 80, right: 10, height: 615, width: 320 }}>
+          <Tabs
+            onChange={this.handleChange.bind(this)}
+            value={this.state.slideIndex}
+          >
+            <Tab label="Tình trạng" value={TAB_ID.TINH_TRANG} />
+            <Tab label="Tuyến đường" value={TAB_ID.TUYEN_DUONG} />
+            <Tab label="Tiêu thụ" value={TAB_ID.TIEU_THU} />
+          </Tabs>
+          <SwipeableViews
+            index={this.state.slideIndex}
+            onChangeIndex={this.handleChange}
+          >
+            <div>
+              <h1 style={{ width: '100%', fontSize: 24, textAlign: 'center' }}>Biểu đồ tình trạng khảo sát</h1>
+              <h2 style={{ width: '100%', fontSize: 20, textAlign: 'center' }}>Đồng hồ khách hàng</h2>
+              <p style={{ textAlign: 'center' }}>
+                Tổng đồng hồ:
             <strong>
-              {(
-                this.state.chartDatas && this.state.chartDatas.length > 1) ?
-                this.state.chartDatas.reduce((a, b) =>
-                  ({ value: a.value + b.value, name: '', key: 0 })).value + '' : '0'
-              }
-            </strong>
-          </p>
-          <PieChart width={280} height={300}>
-            <Tooltip />
-            <Legend verticalAlign="bottom" height={36} align="center" />
-            {
-              this.state.chartDatas && this.state.chartDatas.length > 0 &&
-              < Pie data={this.state.chartDatas}
-                dataKey="value"
-                nameKey="name"
-                cx="50%" cy="50%"
-                innerRadius={20}
-                outerRadius={80}
-                fill="#8884d8"
-                // label={renderCustomizedLabel}
-                label
-              >
+                  {(
+                    this.state.chartDatas && this.state.chartDatas.length > 1) ?
+                    this.state.chartDatas.reduce((a, b) =>
+                      ({ value: a.value + b.value, name: '', key: 0 })).value + '' : '0'
+                  }
+                </strong>
+              </p>
+              <PieChart width={320} height={350}>
+                <Tooltip />
+                <Legend verticalAlign="bottom" height={36} align="center" />
                 {
-                  this.state.chartDatas.map((entry, index) =>
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />)
+                  this.state.chartDatas && this.state.chartDatas.length > 0 &&
+                  < Pie data={this.state.chartDatas}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%" cy="50%"
+                    innerRadius={20}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    label
+                  >
+                    {
+                      this.state.chartDatas.map((entry, index) =>
+                        <Cell key={'cell' + entry.key} fill={COLORS[index % COLORS.length]} />)
+                    }
+                  </Pie>
                 }
-              </Pie>
-            }
-          </PieChart>
-        </Card>
+              </PieChart>
+            </div>
+            <div>
+              <h1 style={{ width: '100%', fontSize: 24, textAlign: 'center' }}>Số đồng hồ theo tuyến đường</h1>
+              {this.state.tuyenDuongDongHoState.error &&
+                <h4 style={{ color: 'red' }}>{this.state.tuyenDuongDongHoState.error}</h4>
+              }
+              {this.state.tuyenDuongDongHoState.isLoading && <LinearProgress />}
+              <div style={{ height: '100%', width: 400, overflowX: 'auto' }}>
+                <Table
+                  height="400px"
+                  selectable={true}
+                  multiSelectable={false}
+                  allRowsSelected={false}
+                >
+                  <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                    <TableRow>
+                      <TableHeaderColumn style={{ width: 40 }}>Mã ĐP</TableHeaderColumn>
+                      <TableHeaderColumn>Tên ĐP</TableHeaderColumn>
+                      <TableHeaderColumn style={{ width: 40 }}>Số lượng</TableHeaderColumn>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody displayRowCheckbox={false}>
+                    {
+                      this.state.tuyenDuongDongHoState.datas
+                      && this.state.tuyenDuongDongHoState.datas.map(
+                        m =>
+                          <TableRow>
+                            <TableRowColumn style={{ width: 40 }}>{m.MaDP}</TableRowColumn>
+                            <TableRowColumn>{m.TenDP}</TableRowColumn>
+                            <TableRowColumn style={{ width: 40 }}>{m.SoLuong}</TableRowColumn>
+                          </TableRow>
+                      )
+                    }
+
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+            <div>
+              <h1 style={{ width: '100%', fontSize: 24, textAlign: 'center' }}>Chỉ số tiêu thụ theo tuyến đường</h1>
+              {this.state.tieuThuState.error &&
+                <h4 style={{ color: 'red' }}>{this.state.tieuThuState.error}</h4>
+              }
+              {this.state.tieuThuState.isLoading && <LinearProgress />}
+              <div style={{ height: '100%', width: 430, overflowX: 'auto' }}>
+                <Table
+                  height="400px"
+                  selectable={true}
+                  multiSelectable={false}
+                  allRowsSelected={false}
+                >
+                  <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                    <TableRow>
+                      <TableHeaderColumn style={{ width: 40 }}>Mã ĐP</TableHeaderColumn>
+                      <TableHeaderColumn>Tên ĐP</TableHeaderColumn>
+                      <TableHeaderColumn style={{ width: 70 }}>Tổng tiêu thụ</TableHeaderColumn>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody displayRowCheckbox={false}>
+                    {
+                      this.state.tieuThuState.datas
+                      && this.state.tieuThuState.datas.map(
+                        m =>
+                          <TableRow>
+                            <TableRowColumn style={{ width: 40 }}>{m.MaDP}</TableRowColumn>
+                            <TableRowColumn>{m.TenDP}</TableRowColumn>
+                            <TableRowColumn style={{ width: 70 }}>{m.SoLuong}</TableRowColumn>
+                          </TableRow>
+                      )
+                    }
+
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </SwipeableViews>
+        </Paper>
       </div>
     );
   }
+}
+
+interface ThongKeTheoTuyenDuong {
+  MaDP: string;
+  TenDP: string;
+  SoLuong: number;
 }
 
 export default ThongKeDongHoKhachHang;

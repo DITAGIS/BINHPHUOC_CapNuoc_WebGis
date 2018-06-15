@@ -1,4 +1,4 @@
 {
-  "dbUri": "mssql://sa:Vnpttg@2017@113.164.237.189/BinhPhuocGIS",
+  "dbUri": "mssql://sa:Vnpttg@2017@113.164.237.189/master",
   "jwtSecret": "ditagis hcmc fuhidev"
 }

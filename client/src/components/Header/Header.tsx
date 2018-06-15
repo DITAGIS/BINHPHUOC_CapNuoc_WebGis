@@ -53,7 +53,7 @@ class Header extends React.Component<Props, States> {
               subtitle={new Date().toLocaleTimeString()}
             />
           </Card>
-          <MenuItem primaryText="Tên phần mềm" />
+          <Link to="/map"><MenuItem primaryText="Quản lý mạng lưới" /></Link>
           <Link to="/thong-ke-dhkh"><MenuItem primaryText="Thống kê đồng hồ khách hàng" /></Link>
           <Divider />
           <CardText>Giới thiệu phần mềm</CardText>

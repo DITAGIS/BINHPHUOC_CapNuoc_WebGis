@@ -26,8 +26,8 @@ app.all('*', function (req, res, next) {
   next();
 });
 // pass the authenticaion checker middleware
-const authCheckMiddleware = require('./server/middleware/auth-check');
-app.use('/api', authCheckMiddleware);
+// const authCheckMiddleware = require('./server/middleware/auth-check');
+// app.use('/api', authCheckMiddleware);
 
 // routes
 const authRoutes = require('./server/routes/auth');

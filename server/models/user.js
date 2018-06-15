@@ -9,7 +9,7 @@ class User {
   }
   static async findById(id) {
     try {
-      const result = await sql.query`select * from SYS_User where UserName = ${id}`
+      const result = await sql.query`select * from BinhPhuocGIS.SYS_User where UserName = ${id}`
       if (result.recordset && result.recordset.length > 0)
         return result.recordset[0];
       else

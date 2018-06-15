@@ -91,8 +91,8 @@ class LoginComponent extends React.Component<Props, States> {
         {
           featureLayer: this.map.findLayerById('DHKH'),
           displayField: 'DBDONGHONUOC',
-          searchFields: ['DBDONGHONUOC', 'SODIENTHOAI', 'SOHOKHAU',
-            'NGUOICAPNHAT', 'LOAIDONGHO', 'HIEUDONGHO', 'SOCHUNGMINH'],
+          searchFields: ['DBDONGHONUOC', 'SODIENTHOAI',
+            'NGUOICAPNHAT', 'SOCHUNGMINH', 'TENDUONG'],
           placeholder: 'Tìm đồng hồ khách hàng'
         } as __esri.FeatureLayerSource,
         {
