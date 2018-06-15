@@ -62,5 +62,21 @@ class Database {
       throw err;
     }
   }
+  static async thongKeDuongOngTheoTuyenDuong() {
+    try {
+      const result = await sql.query`
+      USE EOSBP
+      SELECT DP.MaDP,DP.TenDP,SUM(TT.KLTIEUTHU) AS SoLuong
+      FROM DUONGPHO DP
+      INNER JOIN TieuThu TT ON DP.MADP = TT.MADP
+      GROUP BY DP.MADP,DP.TENDP
+      ORDER BY SoLuong DESC`
+      if (result)
+        return result.recordset;
+      else return null;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 module.exports = Database;

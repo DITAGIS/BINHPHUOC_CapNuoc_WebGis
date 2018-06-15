@@ -16,3 +16,11 @@ export function thongKeTieuThuTheoTuyenDuong() {
       .then(r => resolve(r));
   });
 }
+export function thongKeDuongOngTheoTuyenDuong() {
+  return new Promise((resolve, reject) => {
+    fetch('http://localhost:3000/api/thongkeduongongtheotuyenduong', { method: 'POST' })
+      .then(r => r.json())
+      .catch(e => reject(e))
+      .then(r => resolve(r));
+  });
+}

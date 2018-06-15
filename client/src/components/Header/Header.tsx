@@ -55,6 +55,7 @@ class Header extends React.Component<Props, States> {
           </Card>
           <Link to="/map"><MenuItem primaryText="Quản lý mạng lưới" /></Link>
           <Link to="/thong-ke-dhkh"><MenuItem primaryText="Thống kê đồng hồ khách hàng" /></Link>
+          <Link to="/thong-ke-do"><MenuItem primaryText="Thống kê đường ống" /></Link>
           <Divider />
           <CardText>Giới thiệu phần mềm</CardText>
           <CardText>Phiên bản:</CardText>
