@@ -7,12 +7,12 @@ import StatisticDefinition = require('esri/tasks/support/StatisticDefinition');
 import * as Popup from '../map-lib/widgets/Popup';
 import SearchWidget = require('esri/widgets/Search');
 import watchUtils = require('esri/core/watchUtils');
-import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, Legend, Tooltip, BarChart, Bar, YAxis, CartesianGrid, XAxis } from 'recharts';
 import {
   Card, Tab, Tabs, Table,
   TableBody, TableRow, TableRowColumn, TableHeaderColumn, TableHeader, LinearProgress, Paper
 } from 'material-ui';
-import { thongKeTieuThuTheoTuyenDuong, thongKeTheoTuyenDuong } from '../apis/api';
+import { thongKeTieuThuTheoTuyenDuong, thongKeTheoTuyenDuong, layTieuThuTheoKhachHangTrong12Thang } from '../apis/api';
 import SwipeableViews from 'react-swipeable-views';
 
 const COLORS = ['#1abc9c', '#2ecc71', '#3498db',
@@ -29,6 +29,9 @@ type Props = {
 type States = {
   chartDatas: ChartData[],
   slideIndex: number;
+  bieuDoTieuThu: {
+    datas?: any[]
+  }
   tuyenDuongDongHoState: {
     datas?: ThongKeTheoTuyenDuong[];
     isLoading: boolean,
@@ -62,7 +65,8 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
     this.state = {
       chartDatas: [],
       slideIndex: 0,
-
+      bieuDoTieuThu: {
+      },
       tuyenDuongDongHoState: {
         isLoading: true
       },
@@ -116,6 +120,20 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
     });
 
     this.view.ui.add(search, 'top-left');
+
+    this.view.popup.watch('selectedFeature', (newValue: __esri.Graphic) => {
+      if (newValue.layer.id === 'DHKH') {
+        const maDanhBo = newValue.attributes.DBDONGHONUOC;
+        if (maDanhBo) {
+          layTieuThuTheoKhachHangTrong12Thang({
+            maDanhBo
+          })
+            .then(function (result) {
+              console.log(result);
+            })
+        }
+      }
+    });
   }
 
   private initFL() {
@@ -256,6 +274,18 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
             (element: HTMLDivElement) => this.mapDiv = element
           }>
         </div>
+        {this.state.bieuDoTieuThu.datas &&
+          <Paper style={{ position: 'absolute', bottom: 0, left: 10, height: 250, width: 500 }}>
+            <BarChart width={480} height={230} data={this.state.bieuDoTieuThu.datas}
+              margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="pv" fill="#8884d8" />
+            </BarChart>
+          </Paper>
+        }
         <Paper style={{ position: 'absolute', top: 80, right: 10, height: 615, width: 320 }}>
           <Tabs
             onChange={this.handleChange.bind(this)}

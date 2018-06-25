@@ -59,7 +59,7 @@ router.post('/login', (req, res, next) => {
 
       return res.status(400).json({
         success: false,
-        message: 'Có lỗi xảy ra.'
+        message: err.message
       });
     }
 

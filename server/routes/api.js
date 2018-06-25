@@ -30,5 +30,15 @@ router.post('/thongketieuthutheotuyenduong', (req, res) => {
       res.status(HTTP_STATUS.BAD_REQUEST).json(err);
     });
 });
+router.post('/layTieuThuTheoKhachHangTrong12Thang', (req, res) => {
+  console.log(req.body);
+  EVOSDB.layTieuThuTheoKhachHangTrong12Thang(req.body.maDanhBo)
+    .then((values) => {
+      res.status(HTTP_STATUS.OK).json(values);
+    })
+    .catch((err) => {
+      res.status(HTTP_STATUS.BAD_REQUEST).json(err);
+    });
+});
 
 module.exports = router;

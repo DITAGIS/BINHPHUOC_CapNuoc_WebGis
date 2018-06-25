@@ -78,5 +78,20 @@ class Database {
       throw err;
     }
   }
+  static async layTieuThuTheoKhachHangTrong12Thang(maDanhBo) {
+    try {
+      const result = await sql.query`
+      USE EOSBP
+      SELECT TOP 12 KLTIEUTHU AS SoLuong, Nam, Thang
+      FROM TieuThu
+      WHERE SODB = ${maDanhBo}
+      ORDER BY NAM DESC, THANG DESC`
+      if (result)
+        return result.recordset;
+      else return null;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 module.exports = Database;
