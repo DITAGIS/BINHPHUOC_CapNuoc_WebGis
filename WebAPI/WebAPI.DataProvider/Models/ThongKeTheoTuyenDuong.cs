@@ -10,6 +10,6 @@ namespace WebAPI.DataProvider.Models
     {
         public string MaDP { get; set; }
         public string TenDP { get; set; }
-        public decimal SoLuong { get; set; }
+        public long SoLuong { get; set; }
     }
 }

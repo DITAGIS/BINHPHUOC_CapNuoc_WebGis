@@ -15,7 +15,7 @@ namespace WebAPI.Controllers
     {
         private DongHoKhachHangDB context = new DongHoKhachHangDB();
 
-        [Route("api/DHKH/ThongKeTieuThuTheoTuyenDuong")]
+        [Route("api/DHKH/thongketieuthutheotuyenduong")]
         public HttpResponseMessage ThongKeTieuThuTheoTuyenDuong()
         {
             try
@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, e);
             }
         }
-        [Route("api/DHKH/ThongKeTheoTuyenDuong")]
+        [Route("api/DHKH/thongketheotuyenduong")]
         public HttpResponseMessage ThongKeTheoTuyenDuong()
         {
             try
@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, e);
             }
         }
-        [Route("api/DHKH/ThongKeDuongOngTheoTuyenDuong")]
+        [Route("api/DHKH/thongkeduongongtheotuyenduong")]
         public HttpResponseMessage ThongKeDuongOngTheoTuyenDuong()
         {
             try

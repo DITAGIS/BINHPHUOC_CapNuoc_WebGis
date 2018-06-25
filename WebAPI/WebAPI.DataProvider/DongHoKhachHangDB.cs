@@ -16,7 +16,7 @@ namespace WebAPI.DataProvider
             {
                 using (var context = new EOSBPEntities())
                 {
-                    var query = @"SELECT DP.MaDP,DP.TenDP,COUNT(KH.MADB) AS SoLuong
+                    var query = @"SELECT DP.MaDP,DP.TenDP,CAST(COUNT(KH.MADB) AS BIGINT) AS SoLuong
         FROM DUONGPHO DP
         INNER JOIN KHACHHANG KH ON DP.MADP = KH.MADP
         GROUP BY DP.MADP,DP.TENDP
@@ -37,7 +37,7 @@ namespace WebAPI.DataProvider
             {
                 using (var context = new EOSBPEntities())
                 {
-                    var query = @"SELECT DP.MaDP,DP.TenDP,SUM(TT.KLTIEUTHU) AS SoLuong
+                    var query = @"SELECT DP.MaDP,DP.TenDP,CAST(SUM(TT.KLTIEUTHU) AS BIGINT) AS SoLuong
                                     FROM DUONGPHO DP
                                   INNER JOIN TieuThu TT ON DP.MADP = TT.MADP
                                     GROUP BY DP.MADP,DP.TENDP
@@ -57,7 +57,7 @@ namespace WebAPI.DataProvider
             {
                 using (var context = new EOSBPEntities())
                 {
-                    var query = @"SELECT DP.MaDP,DP.TenDP,SUM(TT.KLTIEUTHU) AS SoLuong
+                    var query = @"SELECT DP.MaDP,DP.TenDP,CAST(SUM(TT.KLTIEUTHU) AS BIGINT) AS SoLuong
                                     FROM DUONGPHO DP
                                   INNER JOIN TieuThu TT ON DP.MADP = TT.MADP
                                     GROUP BY DP.MADP,DP.TENDP

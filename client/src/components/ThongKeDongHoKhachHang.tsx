@@ -237,6 +237,7 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
         try {
           let results = await thongKeTheoTuyenDuong() as ThongKeTheoTuyenDuong[];
           states.datas = results;
+          states.error = undefined;
         } catch (error) {
           states.error = 'Có lỗi xảy ra trong quá trình thực hiện';
         }
@@ -254,6 +255,7 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
         try {
           let results = await thongKeTieuThuTheoTuyenDuong() as ThongKeTheoTuyenDuong[];
           states.datas = results;
+          states.error = undefined;
         } catch (error) {
           states.error = 'Có lỗi xảy ra trong quá trình thực hiện';
         }
