@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WebAPI.DataProvider</RootNamespace>
     <AssemblyName>WebAPI.DataProvider</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,8 +31,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,10 +55,128 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountDB.cs" />
+    <Compile Include="DongHoKhachHangDB.cs" />
+    <Compile Include="EF\AccountModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AccountModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\AccountModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\AccountModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AccountModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="EF\DUONGPHO.cs">
+      <DependentUpon>EOSBPModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\EOSBPModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EOSBPModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\EOSBPModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EOSBPModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\EOSBPModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EOSBPModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="EF\KHACHHANG.cs">
+      <DependentUpon>EOSBPModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Account.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Account_Capability.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Account_Role.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Capability.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_GroupLayer.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Layer.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Layer_Account.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Layer_Role.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Logger_Capability.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Logger_Layer.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Role.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\SYS_Role_Capability.cs">
+      <DependentUpon>AccountModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Helper.cs" />
+    <Compile Include="Models\ThongKeTheoTuyenDuong.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="EF\" />
+    <EntityDeploy Include="EF\AccountModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>AccountModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="EF\AccountModel.edmx.diagram">
+      <DependentUpon>AccountModel.edmx</DependentUpon>
+    </None>
+    <EntityDeploy Include="EF\EOSBPModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EOSBPModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="EF\EOSBPModel.edmx.diagram">
+      <DependentUpon>EOSBPModel.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EF\AccountModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AccountModel.edmx</DependentUpon>
+      <LastGenOutput>AccountModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="EF\AccountModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AccountModel.edmx</DependentUpon>
+      <LastGenOutput>AccountModel.cs</LastGenOutput>
+    </Content>
+    <Content Include="EF\EOSBPModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EOSBPModel.edmx</DependentUpon>
+      <LastGenOutput>EOSBPModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="EF\EOSBPModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EOSBPModel.edmx</DependentUpon>
+      <LastGenOutput>EOSBPModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

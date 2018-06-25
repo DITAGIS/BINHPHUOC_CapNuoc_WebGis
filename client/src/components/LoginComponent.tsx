@@ -7,11 +7,7 @@ type Props = {
   onChange: (event: object) => void
   successMessage: string
   user: User,
-  errors: {
-    summary?: string,
-    username?: string,
-    password?: string
-  }
+  errors: string
 };
 type States = {
 
@@ -26,13 +22,12 @@ class LoginComponent extends React.Component<Props, States> {
           <h2 className="card-heading">Đăng nhập</h2>
 
           {successMessage && <p className="success-message">{successMessage}</p>}
-          {errors.summary && <p className="error-message">{errors.summary}</p>}
+          {errors && <p className="error-message">{errors}</p>}
 
           <div className="field-line">
             <TextField
               floatingLabelText="Tài khoản"
               name="username"
-              errorText={errors.username}
               onChange={onChange}
               value={user.username}
             />
@@ -44,7 +39,6 @@ class LoginComponent extends React.Component<Props, States> {
               type="password"
               name="password"
               onChange={onChange}
-              errorText={errors.password}
               value={user.password}
             />
           </div>

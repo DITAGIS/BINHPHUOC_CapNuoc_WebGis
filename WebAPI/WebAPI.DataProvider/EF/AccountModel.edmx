@@ -1,0 +1,579 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="BinhPhuocModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="SYS_Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="DisplayName" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserCreate" Type="bigint" />
+          <Property Name="DateCreate" Type="datetime" />
+          <Property Name="Expired" Type="datetime" />
+          <Property Name="Status" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Account_Capability' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Account_Capability">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Account" />
+            <PropertyRef Name="Capability" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Account" Type="bigint" Nullable="false" />
+          <Property Name="Capability" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsPrimary" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Account_Role' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Account_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="Account" Type="bigint" />
+          <Property Name="Role" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Capability' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Capability">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_GroupLayer' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_GroupLayer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'BinhPhuoc.dbo.SYS_GroupRole' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="SYS_GroupRole">
+          <Property Name="ID" Type="varchar" MaxLength="10" />
+          <Property Name="Name" Type="nvarchar" MaxLength="155" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Layer' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Layer">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="Url" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Url" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="GroupID" Type="varchar" MaxLength="20" />
+          <Property Name="OutFields" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Layer_Account' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Layer_Account">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Account" />
+            <PropertyRef Name="Layer" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Account" Type="bigint" Nullable="false" />
+          <Property Name="Layer" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="IsCreate" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="IsEdit" Type="bit" />
+          <Property Name="IsView" Type="bit" />
+          <Property Name="OutFields" Type="varchar" MaxLength="1000" />
+          <Property Name="Definition" Type="varchar" MaxLength="1000" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Layer_Role' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Layer_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Layer" />
+            <PropertyRef Name="Role" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="Layer" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Role" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="IsEdit" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="IsView" Type="bit" />
+          <Property Name="IsCreate" Type="bit" />
+          <Property Name="OutFields" Type="varchar" MaxLength="1000" />
+          <Property Name="Definition" Type="varchar" MaxLength="1000" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Logger_Capability' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Logger_Capability">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Username" />
+            <PropertyRef Name="TacVu" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="TacVu" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="ThoiGian" Type="datetime2" Precision="7" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Logger_Layer' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Logger_Layer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="TacVu" Type="nvarchar" MaxLength="1000" />
+          <Property Name="LopDuLieu" Type="varchar" MaxLength="255" />
+          <Property Name="ThuocTinh" Type="varchar" MaxLength="500" />
+          <Property Name="ThoiGian" Type="datetime2" Precision="7" />
+          <Property Name="Username" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Role' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="GroupRole" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BinhPhuoc.dbo.SYS_Role_Capability' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SYS_Role_Capability">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Role" />
+            <PropertyRef Name="Capability" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Role" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Capability" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsPrimary" Type="bit" />
+        </EntityType>
+        <EntityContainer Name="BinhPhuocModelStoreContainer">
+          <EntitySet Name="SYS_Account" EntityType="Self.SYS_Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SYS_Account_Capability" EntityType="Self.SYS_Account_Capability" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Account_Capability].[ID] AS [ID], 
+    [SYS_Account_Capability].[Account] AS [Account], 
+    [SYS_Account_Capability].[Capability] AS [Capability], 
+    [SYS_Account_Capability].[IsPrimary] AS [IsPrimary]
+    FROM [dbo].[SYS_Account_Capability] AS [SYS_Account_Capability]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_Account_Role" EntityType="Self.SYS_Account_Role" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Account_Role].[ID] AS [ID], 
+    [SYS_Account_Role].[Account] AS [Account], 
+    [SYS_Account_Role].[Role] AS [Role]
+    FROM [dbo].[SYS_Account_Role] AS [SYS_Account_Role]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_Capability" EntityType="Self.SYS_Capability" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Capability].[ID] AS [ID], 
+    [SYS_Capability].[Name] AS [Name]
+    FROM [dbo].[SYS_Capability] AS [SYS_Capability]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_GroupLayer" EntityType="Self.SYS_GroupLayer" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_GroupLayer].[Id] AS [Id], 
+    [SYS_GroupLayer].[Name] AS [Name]
+    FROM [dbo].[SYS_GroupLayer] AS [SYS_GroupLayer]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_Layer" EntityType="Self.SYS_Layer" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Layer].[ID] AS [ID], 
+    [SYS_Layer].[Title] AS [Title], 
+    [SYS_Layer].[Url] AS [Url], 
+    [SYS_Layer].[GroupID] AS [GroupID], 
+    [SYS_Layer].[OutFields] AS [OutFields]
+    FROM [dbo].[SYS_Layer] AS [SYS_Layer]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_Layer_Account" EntityType="Self.SYS_Layer_Account" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Layer_Account].[ID] AS [ID], 
+    [SYS_Layer_Account].[Account] AS [Account], 
+    [SYS_Layer_Account].[Layer] AS [Layer], 
+    [SYS_Layer_Account].[IsCreate] AS [IsCreate], 
+    [SYS_Layer_Account].[IsDelete] AS [IsDelete], 
+    [SYS_Layer_Account].[IsEdit] AS [IsEdit], 
+    [SYS_Layer_Account].[IsView] AS [IsView], 
+    [SYS_Layer_Account].[OutFields] AS [OutFields], 
+    [SYS_Layer_Account].[Definition] AS [Definition]
+    FROM [dbo].[SYS_Layer_Account] AS [SYS_Layer_Account]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_Layer_Role" EntityType="Self.SYS_Layer_Role" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Layer_Role].[ID] AS [ID], 
+    [SYS_Layer_Role].[Layer] AS [Layer], 
+    [SYS_Layer_Role].[Role] AS [Role], 
+    [SYS_Layer_Role].[IsEdit] AS [IsEdit], 
+    [SYS_Layer_Role].[IsDelete] AS [IsDelete], 
+    [SYS_Layer_Role].[IsView] AS [IsView], 
+    [SYS_Layer_Role].[IsCreate] AS [IsCreate], 
+    [SYS_Layer_Role].[OutFields] AS [OutFields], 
+    [SYS_Layer_Role].[Definition] AS [Definition]
+    FROM [dbo].[SYS_Layer_Role] AS [SYS_Layer_Role]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_Logger_Capability" EntityType="Self.SYS_Logger_Capability" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Logger_Capability].[ID] AS [ID], 
+    [SYS_Logger_Capability].[Username] AS [Username], 
+    [SYS_Logger_Capability].[TacVu] AS [TacVu], 
+    [SYS_Logger_Capability].[ThoiGian] AS [ThoiGian]
+    FROM [dbo].[SYS_Logger_Capability] AS [SYS_Logger_Capability]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_Logger_Layer" EntityType="Self.SYS_Logger_Layer" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Logger_Layer].[ID] AS [ID], 
+    [SYS_Logger_Layer].[TacVu] AS [TacVu], 
+    [SYS_Logger_Layer].[LopDuLieu] AS [LopDuLieu], 
+    [SYS_Logger_Layer].[ThuocTinh] AS [ThuocTinh], 
+    [SYS_Logger_Layer].[ThoiGian] AS [ThoiGian], 
+    [SYS_Logger_Layer].[Username] AS [Username]
+    FROM [dbo].[SYS_Logger_Layer] AS [SYS_Logger_Layer]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_Role" EntityType="Self.SYS_Role" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Role].[ID] AS [ID], 
+    [SYS_Role].[Name] AS [Name], 
+    [SYS_Role].[GroupRole] AS [GroupRole]
+    FROM [dbo].[SYS_Role] AS [SYS_Role]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SYS_Role_Capability" EntityType="Self.SYS_Role_Capability" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SYS_Role_Capability].[ID] AS [ID], 
+    [SYS_Role_Capability].[Role] AS [Role], 
+    [SYS_Role_Capability].[Capability] AS [Capability], 
+    [SYS_Role_Capability].[IsPrimary] AS [IsPrimary]
+    FROM [dbo].[SYS_Role_Capability] AS [SYS_Role_Capability]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BinhPhuocModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="SYS_Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserCreate" Type="Int64" />
+          <Property Name="DateCreate" Type="DateTime" Precision="3" />
+          <Property Name="Expired" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="SYS_Account_Capability">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Account" />
+            <PropertyRef Name="Capability" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Account" Type="Int64" Nullable="false" />
+          <Property Name="Capability" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IsPrimary" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="SYS_Account_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="Account" Type="Int64" />
+          <Property Name="Role" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SYS_Capability">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="ID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SYS_GroupLayer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SYS_Layer">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="Url" />
+          </Key>
+          <Property Name="ID" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Url" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="GroupID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="OutFields" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SYS_Layer_Account">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Account" />
+            <PropertyRef Name="Layer" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Account" Type="Int64" Nullable="false" />
+          <Property Name="Layer" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IsCreate" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="IsEdit" Type="Boolean" />
+          <Property Name="IsView" Type="Boolean" />
+          <Property Name="OutFields" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Definition" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SYS_Layer_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Layer" />
+            <PropertyRef Name="Role" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="Layer" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IsEdit" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="IsView" Type="Boolean" />
+          <Property Name="IsCreate" Type="Boolean" />
+          <Property Name="OutFields" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Definition" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SYS_Logger_Capability">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Username" />
+            <PropertyRef Name="TacVu" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TacVu" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ThoiGian" Type="DateTime" Precision="7" />
+        </EntityType>
+        <EntityType Name="SYS_Logger_Layer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="TacVu" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="LopDuLieu" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ThuocTinh" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ThoiGian" Type="DateTime" Precision="7" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SYS_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="ID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="GroupRole" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SYS_Role_Capability">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Role" />
+            <PropertyRef Name="Capability" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Capability" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IsPrimary" Type="Boolean" />
+        </EntityType>
+        <EntityContainer Name="BinhPhuocAccountEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="SYS_Account" EntityType="Self.SYS_Account" />
+          <EntitySet Name="SYS_Account_Capability" EntityType="Self.SYS_Account_Capability" />
+          <EntitySet Name="SYS_Account_Role" EntityType="Self.SYS_Account_Role" />
+          <EntitySet Name="SYS_Capability" EntityType="Self.SYS_Capability" />
+          <EntitySet Name="SYS_GroupLayer" EntityType="Self.SYS_GroupLayer" />
+          <EntitySet Name="SYS_Layer" EntityType="Self.SYS_Layer" />
+          <EntitySet Name="SYS_Layer_Account" EntityType="Self.SYS_Layer_Account" />
+          <EntitySet Name="SYS_Layer_Role" EntityType="Self.SYS_Layer_Role" />
+          <EntitySet Name="SYS_Logger_Capability" EntityType="Self.SYS_Logger_Capability" />
+          <EntitySet Name="SYS_Logger_Layer" EntityType="Self.SYS_Logger_Layer" />
+          <EntitySet Name="SYS_Role" EntityType="Self.SYS_Role" />
+          <EntitySet Name="SYS_Role_Capability" EntityType="Self.SYS_Role_Capability" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BinhPhuocModelStoreContainer" CdmEntityContainer="BinhPhuocAccountEntities">
+          <EntitySetMapping Name="SYS_Account">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Account">
+              <MappingFragment StoreEntitySet="SYS_Account">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="UserCreate" ColumnName="UserCreate" />
+                <ScalarProperty Name="DateCreate" ColumnName="DateCreate" />
+                <ScalarProperty Name="Expired" ColumnName="Expired" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Account_Capability">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Account_Capability">
+              <MappingFragment StoreEntitySet="SYS_Account_Capability">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="Capability" ColumnName="Capability" />
+                <ScalarProperty Name="IsPrimary" ColumnName="IsPrimary" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Account_Role">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Account_Role">
+              <MappingFragment StoreEntitySet="SYS_Account_Role">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Capability">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Capability">
+              <MappingFragment StoreEntitySet="SYS_Capability">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_GroupLayer">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_GroupLayer">
+              <MappingFragment StoreEntitySet="SYS_GroupLayer">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Layer">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Layer">
+              <MappingFragment StoreEntitySet="SYS_Layer">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="OutFields" ColumnName="OutFields" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Layer_Account">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Layer_Account">
+              <MappingFragment StoreEntitySet="SYS_Layer_Account">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="Layer" ColumnName="Layer" />
+                <ScalarProperty Name="IsCreate" ColumnName="IsCreate" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="IsEdit" ColumnName="IsEdit" />
+                <ScalarProperty Name="IsView" ColumnName="IsView" />
+                <ScalarProperty Name="OutFields" ColumnName="OutFields" />
+                <ScalarProperty Name="Definition" ColumnName="Definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Layer_Role">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Layer_Role">
+              <MappingFragment StoreEntitySet="SYS_Layer_Role">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Layer" ColumnName="Layer" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="IsEdit" ColumnName="IsEdit" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="IsView" ColumnName="IsView" />
+                <ScalarProperty Name="IsCreate" ColumnName="IsCreate" />
+                <ScalarProperty Name="OutFields" ColumnName="OutFields" />
+                <ScalarProperty Name="Definition" ColumnName="Definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Logger_Capability">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Logger_Capability">
+              <MappingFragment StoreEntitySet="SYS_Logger_Capability">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="TacVu" ColumnName="TacVu" />
+                <ScalarProperty Name="ThoiGian" ColumnName="ThoiGian" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Logger_Layer">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Logger_Layer">
+              <MappingFragment StoreEntitySet="SYS_Logger_Layer">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TacVu" ColumnName="TacVu" />
+                <ScalarProperty Name="LopDuLieu" ColumnName="LopDuLieu" />
+                <ScalarProperty Name="ThuocTinh" ColumnName="ThuocTinh" />
+                <ScalarProperty Name="ThoiGian" ColumnName="ThoiGian" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Role">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Role">
+              <MappingFragment StoreEntitySet="SYS_Role">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="GroupRole" ColumnName="GroupRole" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_Role_Capability">
+            <EntityTypeMapping TypeName="BinhPhuocModel.SYS_Role_Capability">
+              <MappingFragment StoreEntitySet="SYS_Role_Capability">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="Capability" ColumnName="Capability" />
+                <ScalarProperty Name="IsPrimary" ColumnName="IsPrimary" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

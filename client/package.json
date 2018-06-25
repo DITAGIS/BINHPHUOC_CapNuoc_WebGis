@@ -5,6 +5,7 @@
     "@arcgis/webpack-plugin": "^4.7.1",
     "@types/arcgis-js-api": "^4.7.0",
     "@types/axios": "^0.14.0",
+    "@types/jquery": "^3.3.4",
     "@types/material-ui": "^0.21.2",
     "@types/react": "^16.1.0",
     "@types/react-dom": "^16.0.4",
@@ -37,6 +38,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "jquery": "^3.3.1",
     "material-ui": "^0.20.0",
     "material-ui-scrollable-tabs": "^2.0.0",
     "react": "^16.2.0",

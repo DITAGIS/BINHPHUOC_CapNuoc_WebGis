@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Web.Http;
+using WebAPI.DataProvider;
+using WebAPI.DataProvider.EF;
 using WebAPI.Models;
 
 
@@ -11,44 +13,51 @@ namespace WebAPI.Controllers
 {
     public class LoginController : ApiController
     {
+        private AccountDB provider = new AccountDB();
+
         [HttpPost]
-        public IHttpActionResult Authenticate([FromBody] LoginRequest login)
+        public HttpResponseMessage Authenticate([FromBody] LoginRequest login)
         {
             var loginResponse = new LoginResponse { };
-            LoginRequest loginrequest = new LoginRequest { };
-            loginrequest.Username = login.Username.ToLower();
-            loginrequest.Password = login.Password;
+            SYS_Account loginRequest = new SYS_Account {
+                Username = login.Username.ToLower(),
+                Password = login.Password
+            };
 
-            IHttpActionResult response;
-            HttpResponseMessage responseMsg = new HttpResponseMessage();
             bool isUsernamePasswordValid = false;       
 
             if(login != null)
-            isUsernamePasswordValid=loginrequest.Password=="admin" ? true:false;
+            {
+                try
+                {
+                    isUsernamePasswordValid = provider.IsValid(loginRequest) != null;
+                }
+                catch (Exception e)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, e);
+                }
+            }
+                
             // if credentials are valid
             if (isUsernamePasswordValid)
             {
-                string token = createToken(loginrequest.Username);
+                string token = CreateToken(loginRequest.Username);
                 //return the token
-                return Ok<string>(token);
+                return Request.CreateResponse(HttpStatusCode.OK, token);
             }
             else
             {
-                // if credentials are not valid send unauthorized status code in response
-                loginResponse.responseMsg.StatusCode = HttpStatusCode.Unauthorized;
-                response = ResponseMessage(loginResponse.responseMsg);
-                return response;
+                return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Tài khoản hoặc mật khẩu không đúng");
             }
         }
 
-        private string createToken(string username)
+        private string CreateToken(string username)
         {
             //Set issued at date
             DateTime issuedAt = DateTime.UtcNow;
             //set the time when it expires
             DateTime expires = DateTime.UtcNow.AddDays(7);
 
-            //http://stackoverflow.com/questions/18223868/how-to-encrypt-jwt-security-token
             var tokenHandler = new JwtSecurityTokenHandler();
           
             //create a identity and add claims to the user which we want to log in

@@ -3,13 +3,10 @@ import LoginComponent from '../components/LoginComponent';
 import User from '../models/User';
 import Auth from '../modules/Auth';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { login } from '../apis/api';
 type State = {
   user: User
-  errors: {
-    summary?: string,
-    username?: string,
-    password?: string
-  }
+  errors: string
   successMessage: string
 };
 
@@ -34,7 +31,7 @@ class LoginPage extends React.Component<Props, State> {
         username: '',
         password: ''
       },
-      errors: {},
+      errors: '',
       successMessage,
     };
   }
@@ -46,44 +43,24 @@ class LoginPage extends React.Component<Props, State> {
     // create a string for an HTTP body message
     const username = encodeURIComponent(this.state.user.username);
     const password = encodeURIComponent(this.state.user.password);
-    const formData = `username=${username}&password=${password}`;
 
-    // create an AJAX request
-    const xhr = new XMLHttpRequest();
-    xhr.open('post', 'http://bpwis.vbgis.vn:3000/auth/login');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        // success
-
-        // change the component-container state
-        this.setState({
-          errors: {}
-        });
-
-        // save the token
-        Auth.authenticateUser(xhr.response.token);
+    login(username, password)
+      .then((token: string) => {
+        Auth.authenticateUser(token);
 
         // update authenticated state
         this.props.toggleAuthenticateStatus();
 
         // redirect signed in user to dashboard
         this.props.history.push('/map');
-        // this.context.router.replace('/');
-      } else {
-        // failure
-
-        // change the component state
-        const errors = xhr.response.errors ? xhr.response.errors : {};
-        errors.summary = xhr.response.message;
-
-        this.setState({
-          errors
-        });
-      }
-    });
-    xhr.send(formData);
+      })
+      .catch((e: any) => {
+        if (e.responseJSON.Message) {
+          this.setState({
+            errors: e.responseJSON.Message
+          });
+        }
+      });
   }
 
   /**
