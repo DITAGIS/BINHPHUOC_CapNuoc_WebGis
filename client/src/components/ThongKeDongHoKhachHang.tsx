@@ -7,7 +7,7 @@ import StatisticDefinition = require('esri/tasks/support/StatisticDefinition');
 import * as Popup from '../map-lib/widgets/Popup';
 import SearchWidget = require('esri/widgets/Search');
 import watchUtils = require('esri/core/watchUtils');
-import { Tooltip, BarChart, Bar, YAxis, CartesianGrid, XAxis } from 'recharts';
+
 import {
   Tab, Tabs, Paper
 } from 'material-ui';
@@ -15,6 +15,7 @@ import { thongKeTieuThuTheoTuyenDuong, thongKeTheoTuyenDuong, layTieuThuTheoKhac
 import TinhTrangComponent from './DongHoKhachHang/TinhTrangComponent';
 import TuyenDuongComponent from './DongHoKhachHang/TuyenDuongComponent';
 import TieuThuComponent from './DongHoKhachHang/TieuThuComponent';
+import BieuDoTieuThuComponent from './DongHoKhachHang/BieuDoTieuThuComponent';
 
 interface ChartData {
   name: string;
@@ -28,14 +29,18 @@ type States = {
   chartDatas: ChartData[],
   slideIndex: number;
   bieuDoTieuThu: {
-    datas?: any[]
+    datas?: any[],
+    isLoading: boolean,
+    error?: string,
+    isOpen: boolean,
+    danhBo?: string
   }
-  tuyenDuongDongHoState: {
+  tuyenDuongDongHo: {
     datas?: ThongKeTheoTuyenDuong[];
     isLoading: boolean,
     error?: string,
   }
-  tieuThuState: {
+  tieuThu: {
     datas?: ThongKeTheoTuyenDuong[];
     isLoading: boolean,
     error?: string
@@ -64,11 +69,13 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
       chartDatas: [],
       slideIndex: 0,
       bieuDoTieuThu: {
+        isLoading: true,
+        isOpen: false
       },
-      tuyenDuongDongHoState: {
+      tuyenDuongDongHo: {
         isLoading: true
       },
-      tieuThuState: {
+      tieuThu: {
         isLoading: true
       }
     };
@@ -119,18 +126,86 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
 
     this.view.ui.add(search, 'top-left');
 
-    this.view.popup.watch('selectedFeature', this.popupChangeHandle.bind(this));
+    this.view.popup.watch('selectedFeature', this.popupSelectedFeatureChangeHandle.bind(this));
+    this.view.popup.watch('visible', this.popupVisibleChangeHandle.bind(this));
+  }
+  /**
+   * Bắt sự kiện đóng mở popup
+   */
+  private popupVisibleChangeHandle(newVal: boolean, oldVal: boolean) {
+    // nếu newVal = false tức là popup đã tắt
+    if (!newVal) {
+      // tắt hiển thị biểu đồ tiêu thụ
+      this.setState({
+        bieuDoTieuThu: {
+          datas: [],
+          error: undefined,
+          isLoading: true,
+          isOpen: false
+        }
+      });
+    }
   }
 
-  private popupChangeHandle(newValue: __esri.Graphic, oldVal: __esri.Graphic) {
-    if (newValue && newValue.layer.id === 'DHKH' && (newValue !== oldVal)) {
-      const maDanhBo = newValue.attributes.DBDONGHONUOC;
+  /**
+   * Bắt sự kiện thay đổi đối tượng hiển thị popup
+   */
+  private popupSelectedFeatureChangeHandle(newVal: __esri.Graphic, oldVal: __esri.Graphic) {
+
+    if (newVal && newVal.layer.id === 'DHKH' && (newVal !== oldVal)) {
+      const maDanhBo = newVal.attributes.DBDONGHONUOC;
       if (maDanhBo) {
+        this.setState({
+          bieuDoTieuThu: {
+            datas: [],
+            error: undefined,
+            isLoading: true,
+            isOpen: true,
+            danhBo: maDanhBo
+          }
+        });
+
         layTieuThuTheoKhachHangTrong12Thang(maDanhBo)
-          .then(function (result: any) {
-            console.log(result);
+          .then((result: any) => {
+            this.setState({
+              bieuDoTieuThu: {
+                datas: result,
+                error: undefined,
+                isLoading: false,
+                isOpen: true,
+                danhBo: maDanhBo
+              }
+            });
+          })
+          .catch((e: any) => {
+            this.setState({
+              bieuDoTieuThu: {
+                datas: [],
+                error: e && e.Message && e.Message,
+                isLoading: false,
+                isOpen: true
+              }
+            });
           });
+      } else {
+        this.setState({
+          bieuDoTieuThu: {
+            datas: [],
+            error: 'Không tồn tại mã danh bộ',
+            isLoading: false,
+            isOpen: true
+          }
+        });
       }
+    } else {
+      this.setState({
+        bieuDoTieuThu: {
+          datas: [],
+          error: undefined,
+          isLoading: true,
+          isOpen: false
+        }
+      });
     }
   }
 
@@ -228,7 +303,7 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
 
     if (value === TAB_ID.TUYEN_DUONG) {
       let states = {
-        ...this.state.tuyenDuongDongHoState
+        ...this.state.tuyenDuongDongHo
       };
       // nếu chưa tải dữ liệu thống kê tuyến đường
       if (!states.datas) {
@@ -241,12 +316,12 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
         }
         finally {
           states.isLoading = false;
-          this.setState({ tuyenDuongDongHoState: states });
+          this.setState({ tuyenDuongDongHo: states });
         }
       }
     } else if (value === TAB_ID.TIEU_THU) {
       let states = {
-        ...this.state.tieuThuState
+        ...this.state.tieuThu
       };
       // nếu chưa tải dữ liệu thống kê tuyến đường
       if (!states.datas) {
@@ -259,14 +334,14 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
         }
         finally {
           states.isLoading = false;
-          this.setState({ tieuThuState: states });
+          this.setState({ tieuThu: states });
         }
       }
     }
 
   }
   render() {
-    const { tuyenDuongDongHoState, tieuThuState } = this.state;
+    const { tuyenDuongDongHo, tieuThu, bieuDoTieuThu } = this.state;
     return (
       <div className={classes.container}>
         <div
@@ -275,18 +350,13 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
             (element: HTMLDivElement) => this.mapDiv = element
           }>
         </div>
-        {this.state.bieuDoTieuThu.datas &&
-          <Paper style={{ position: 'absolute', bottom: 0, left: 10, height: 250, width: 500 }}>
-            <BarChart width={480} height={230} data={this.state.bieuDoTieuThu.datas}
-              margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="pv" fill="#8884d8" />
-            </BarChart>
-          </Paper>
-        }
+        <BieuDoTieuThuComponent
+          datas={bieuDoTieuThu.datas}
+          error={bieuDoTieuThu.error}
+          isLoading={bieuDoTieuThu.isLoading}
+          isOpen={bieuDoTieuThu.isOpen}
+          danhBo={bieuDoTieuThu.danhBo ? bieuDoTieuThu.danhBo : ''}
+        />
         <Paper style={{ position: 'absolute', top: 80, right: 10, height: 615, width: 405 }}>
           <Tabs
             onChange={this.handleChange.bind(this)}
@@ -297,15 +367,15 @@ class ThongKeDongHoKhachHang extends React.Component<Props, States> {
             </Tab>
             <Tab label="Tuyến đường" value={TAB_ID.TUYEN_DUONG}>
               <TuyenDuongComponent
-                datas={tuyenDuongDongHoState.datas}
-                error={tuyenDuongDongHoState.error}
-                isLoading={tuyenDuongDongHoState.isLoading} />
+                datas={tuyenDuongDongHo.datas}
+                error={tuyenDuongDongHo.error}
+                isLoading={tuyenDuongDongHo.isLoading} />
             </Tab>
             <Tab label="Tiêu thụ" value={TAB_ID.TIEU_THU} >
               <TieuThuComponent
-                datas={tieuThuState.datas}
-                error={tieuThuState.error}
-                isLoading={tieuThuState.isLoading} />
+                datas={tieuThu.datas}
+                error={tieuThu.error}
+                isLoading={tieuThu.isLoading} />
             </Tab>
           </Tabs>
           {/* <SwipeableViews

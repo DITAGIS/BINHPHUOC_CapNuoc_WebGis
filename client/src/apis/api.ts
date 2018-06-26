@@ -39,5 +39,5 @@ export function thongKeDuongOngTheoTuyenDuong() {
 }
 export function layTieuThuTheoKhachHangTrong12Thang(maDanhBo: string) {
   var url = API_URL + '/DHKH/laytieuthutheokhachhangtrong12thang';
-  return post(url, JSON.stringify(maDanhBo));
+  return post(url, maDanhBo);
 }
