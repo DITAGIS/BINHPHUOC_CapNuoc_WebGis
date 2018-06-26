@@ -54,5 +54,18 @@ namespace WebAPI.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, e);
             }
         }
+        [Route("api/DHKH/laytieuthutheokhachhangtrong12thang")]
+        public HttpResponseMessage LayTieuThuTheoKhachHangTrong12Thang([FromBody] string maDanhBo)
+        {
+            try
+            {
+                var result = context.LayTieuThuTheoKhachHangTrong12Thang(maDanhBo);
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, e);
+            }
+        }
     }
 }

@@ -14,8 +14,8 @@ import Index from './pages/index';
 const muiTheme = getMuiTheme({
   palette: {
     primary1Color: '#0785e4b0',
-    primary2Color: '#89ccff',
-    primary3Color: '#0070c5',
+    // primary2Color: '#89ccff',
+    // primary3Color: '#0070c5',
 
   },
 });

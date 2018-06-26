@@ -131,6 +131,7 @@
     </Compile>
     <Compile Include="Helper.cs" />
     <Compile Include="Models\ThongKeTheoTuyenDuong.cs" />
+    <Compile Include="Models\TieuThuKHThongKe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

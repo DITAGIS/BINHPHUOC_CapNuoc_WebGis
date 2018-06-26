@@ -71,17 +71,17 @@ namespace WebAPI.DataProvider
                 throw e;
             }
         }
-        public object LayTieuThuTheoKhachHangTrong12Thang(string maDanhBo)
+        public List<TieuThuKHThongKe> LayTieuThuTheoKhachHangTrong12Thang(string maDanhBo)
         {
             try
             {
                 using (var context = new EOSBPEntities())
                 {
-                    var query = String.Format(@"SELECT TOP 12 KLTIEUTHU AS SoLuong, Nam, Thang
+                    var query = String.Format(@"SELECT TOP 12 CAST(KLTIEUTHU AS BIGINT) AS SoLuong, Nam, Thang
                                               FROM TieuThu
                                               WHERE SODB = '{0}'", maDanhBo);
                     query = Helper.Query(query);
-                    return context.Database.SqlQuery<object>(query);
+                    return context.Database.SqlQuery<TieuThuKHThongKe>(query).ToList();
                 }
             }
             catch (Exception e)

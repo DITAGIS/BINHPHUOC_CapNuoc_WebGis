@@ -9,27 +9,15 @@ import SearchWidget = require('esri/widgets/Search');
 import Expand = require('esri/widgets/Expand');
 import LayerList = require('esri/widgets/LayerList');
 import Legend = require('esri/widgets/Legend');
-import watchUtils = require('esri/core/watchUtils');
 import {
-  Tab, Tabs, Table,
-  TableBody, TableRow, TableRowColumn, TableHeaderColumn, TableHeader, LinearProgress, Paper
+  Tab, Tabs, Paper
 } from 'material-ui';
 import { thongKeDuongOngTheoTuyenDuong } from '../apis/api';
-import SwipeableViews from 'react-swipeable-views';
-
-const COLORS = ['#1abc9c', '#2ecc71', '#3498db',
-  '#9b59b6', '#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-
-interface ChartData {
-  name: string;
-  key: number;
-  value: number;
-}
+import TuyenDuongComponent from './DuongOng/TuyenDuongComponent';
 
 type Props = {
 };
 type States = {
-  chartDatas: ChartData[],
   slideIndex: number;
   tuyenDuongState: {
     datas?: ThongKeTheoTuyenDuong[];
@@ -56,8 +44,7 @@ class ThongKeDuongOng extends React.Component<Props, States> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      chartDatas: [],
-      slideIndex: 0,
+      slideIndex: -1,
 
       tuyenDuongState: {
         isLoading: true
@@ -76,6 +63,7 @@ class ThongKeDuongOng extends React.Component<Props, States> {
 
     this.initFL();
     this.initWidget();
+    this.handleChange(TAB_ID.TUYEN_DUONG);
   }
 
   private initWidget() {
@@ -166,79 +154,8 @@ class ThongKeDuongOng extends React.Component<Props, States> {
       id: 'DHKH'
     });
     this.map.addMany([basemap, this.layer, ongNganh, dongHoKhachHang]);
-    this.view.whenLayerView(this.layer)
-      .then((layerView: __esri.LayerView) => {
-        let domain = this.layer.getFieldDomain('TinhTrangKhaoSat') as __esri.CodedValueDomain,
-          codedValues = domain.codedValues;
-        this.setState({
-          chartDatas: codedValues.map(m => {
-            return {
-              name: m.name,
-              key: m.code,
-              value: 0
-            } as ChartData;
-          })
-        });
-
-        let falseHandle = watchUtils.watch(layerView, 'updating', (val: boolean) => {
-          if (!val && this.state.slideIndex === TAB_ID.DONG_HO) {
-            this.layer.queryFeatureCount({
-              where: '1=1'
-            })
-              .then((count: number) => {
-                if (count > 0) {
-                  falseHandle.remove();
-                  this.queryLayerViewStats(layerView);
-                }
-              });
-          }
-          watchUtils.whenTrue(this.view, 'stationary', (value) => {
-            if (this.state.slideIndex === TAB_ID.DONG_HO) {
-              this.queryLayerViewStats(layerView);
-            }
-          });
-        });
-      });
   }
 
-  private queryLayerViewStats(layerView: __esri.LayerView) {
-
-    // query statistics for features only in view extent
-    const query = this.layer.createQuery();
-    query.outStatistics = [new StatisticDefinition({
-      onStatisticField: 'TinhTrangKhaoSat',
-      outStatisticFieldName: 'Value',
-      statisticType: 'count'
-    })];
-    query.groupByFieldsForStatistics = ['TinhTrangKhaoSat'];
-    query.geometry = this.view.extent;
-
-    // query features within the view's extent on the client
-    return this.layer.queryFeatures(query)
-      .then((data) => {
-        let chartDatas = this.state.chartDatas.slice();
-        chartDatas.forEach(f => {
-          f.value = 0;
-        });
-        data.features.forEach(feature => {
-          const attributes = feature.attributes;
-          const { TinhTrangKhaoSat, Value } = attributes;
-          let chartData = chartDatas.find(f => f.key === TinhTrangKhaoSat);
-          if (chartData) {
-            chartData.value = Value;
-          }
-        });
-
-        this.setState({ chartDatas });
-
-      });
-  }
-
-  // helper function for formatting number labels with commas
-  // private numberWithCommas(value) {
-  //   value = value || 0;
-  //   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  // }
   private async  handleChange(value: number) {
     this.setState({ slideIndex: value });
 
@@ -264,6 +181,7 @@ class ThongKeDuongOng extends React.Component<Props, States> {
 
   }
   render() {
+    const { tuyenDuongState } = this.state;
     return (
       <div className={classes.container}>
         <div
@@ -272,70 +190,22 @@ class ThongKeDuongOng extends React.Component<Props, States> {
             (element: HTMLDivElement) => this.mapDiv = element
           }>
         </div>
-        <Paper style={{ position: 'absolute', top: 80, right: 10, height: 615, width: 320 }}>
+        <Paper style={{ position: 'absolute', top: 80, right: 10, height: 615, width: 500 }}>
           <Tabs
             onChange={this.handleChange.bind(this)}
             value={this.state.slideIndex}
           >
-            <Tab label="Tuyến đường" value={TAB_ID.TUYEN_DUONG} />
-            <Tab label="Đồng hồ" value={TAB_ID.DONG_HO} />
+            <Tab label="Tuyến đường" value={TAB_ID.TUYEN_DUONG}>
+              <TuyenDuongComponent
+                datas={tuyenDuongState.datas}
+                error={tuyenDuongState.error}
+                isLoading={tuyenDuongState.isLoading}
+              />
+            </Tab>
+            <Tab label="Đồng hồ" value={TAB_ID.DONG_HO}>
+              <h1>Đang phát triển</h1>
+            </Tab>
           </Tabs>
-          <SwipeableViews
-            index={this.state.slideIndex}
-            onChangeIndex={this.handleChange}
-          >
-            <div>
-              <h1 style={{ width: '100%', fontSize: 24, textAlign: 'center' }}>Số đường ống theo tuyến đường</h1>
-              {this.state.tuyenDuongState.error &&
-                <h4 style={{ color: 'red' }}>{this.state.tuyenDuongState.error}</h4>
-              }
-              {this.state.tuyenDuongState.isLoading && <LinearProgress />}
-              <div style={{ height: '100%', width: 400, overflowX: 'auto' }}>
-                <Table
-                  height="400px"
-                  selectable={true}
-                  multiSelectable={false}
-                  allRowsSelected={false}
-                >
-                  <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                    <TableRow>
-                      <TableHeaderColumn style={{ width: 40 }}>Mã ĐP</TableHeaderColumn>
-                      <TableHeaderColumn>Tên ĐP</TableHeaderColumn>
-                      <TableHeaderColumn style={{ width: 40 }}>Số lượng</TableHeaderColumn>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody displayRowCheckbox={false}>
-                    {
-                      this.state.tuyenDuongState.datas
-                      && this.state.tuyenDuongState.datas.map(
-                        m =>
-                          <TableRow>
-                            <TableRowColumn style={{ width: 40 }}>{m.MaDP}</TableRowColumn>
-                            <TableRowColumn>{m.TenDP}</TableRowColumn>
-                            <TableRowColumn style={{ width: 40 }}>{m.SoLuong}</TableRowColumn>
-                          </TableRow>
-                      )
-                    }
-
-                  </TableBody>
-                </Table>
-              </div>
-            </div>
-            <div>
-              {/* <h1 style={{ width: '100%', fontSize: 24, textAlign: 'center' }}>Biểu đồ tình trạng khảo sát</h1>
-              <h2 style={{ width: '100%', fontSize: 20, textAlign: 'center' }}>Đồng hồ khách hàng</h2>
-              <p style={{ textAlign: 'center' }}>
-                Tổng đồng hồ:
-            <strong>
-                  {(
-                    this.state.chartDatas && this.state.chartDatas.length > 1) ?
-                    this.state.chartDatas.reduce((a, b) =>
-                      ({ value: a.value + b.value, name: '', key: 0 })).value + '' : '0'
-                  }
-                </strong>
-              </p> */}
-            </div>
-          </SwipeableViews>
         </Paper>
       </div>
     );
