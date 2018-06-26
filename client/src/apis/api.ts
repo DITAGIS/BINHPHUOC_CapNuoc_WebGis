@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:50191/api';
+const API_URL = '//bpwis.vbgis.vn/api/api';
 import Auth from '../modules/Auth';
 import { ajax } from 'jquery';
 
